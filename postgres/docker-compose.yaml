@@ -1,0 +1,33 @@
+services:
+  postgres-db:
+    container_name: postgres-db
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: postgres
+      POSTGRES_DB: example
+    ports:
+      - 6968:5432
+    volumes:
+      - db-volume:/var/lib/postgresql/data/
+    networks:
+      - postgres-net
+
+  pg-admin:
+    depends_on: 
+      - postgres-db
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "beck.henrique.luis@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "PgAdmin@2024!"
+    ports:
+      - 6969:80
+    networks:
+      - postgres-net
+
+volumes:
+  db-volume:
+
+networks:
+  postgres-net:
+    driver: bridge
