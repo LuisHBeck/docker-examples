@@ -1,0 +1,60 @@
+services:
+  # image project
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel 
+
+  # nginx
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8989:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - laravel
+
+  # db mysql
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - db_volume:/var/lib/mysql
+    ports:
+      - "3388:3306"
+    networks:
+      - laravel
+
+  # PHPMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8008:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - laravel
+
+volumes:
+  db_volume:
+
+networks:
+  laravel:
+    driver: bridge
