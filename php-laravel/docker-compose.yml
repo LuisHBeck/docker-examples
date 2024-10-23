@@ -26,6 +26,7 @@ services:
   # db mysql
   db:
     image: mysql:8.0
+    container_name: db_laravel
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
