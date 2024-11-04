@@ -3,7 +3,7 @@ FROM python:3.10.5
 RUN apt update -y && apt upgrade -y && \
     apt install nano git -y && \
     pip install uv && \
-    echo 'alias cls="clear"' >> ~/.bashrc &&
+    echo 'alias cls="clear"' >> ~/.bashrc
 
 WORKDIR /code
 
